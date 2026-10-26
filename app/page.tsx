@@ -11,6 +11,8 @@ export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all')
+
   function handleAdd(text: string) {
     const newTodo: Todo = {
       id: crypto.randomUUID(),
@@ -31,6 +33,12 @@ export default function Home() {
     setTodos(prev => prev.filter(item => item.id !== id))
   }
 
+  const filteredTodos = todos.filter(todo => {
+    if (filter === 'active') return !todo.completed
+    if (filter === 'completed') return todo.completed
+    return true
+  })
+
   useEffect(() => {
     setTodos(loadTodos())
     setIsLoading(false)
@@ -47,19 +55,26 @@ export default function Home() {
   )
 
   return (
-    <main className="min-h-screen bg-gray-900 py-10">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-2xl font-bold text-center mb-6 text-white">
-          Список завдань
-        </h1>
-        <TodoForm onAdd={handleAdd} />
-        <TodoList
-          todos={todos}
-          onToggle={handleToggle}
-          onDelete={handleDelete}
-        />
-        <TodoCounter todos={todos} />
-      </div>
-    </main>
+      <main className="min-h-screen bg-gray-900 py-10">
+          <div className="max-w-md mx-auto">
+              <h1 className="text-2xl font-bold text-center mb-6 text-white">Список завдань</h1>
+              <TodoForm onAdd={handleAdd} />
+              <div className="flex gap-2 mt-4">
+                  <button onClick={() => setFilter('all')} className={filter === 'all' ? 'flex-1 py-1 rounded text-sm text-white bg-blue-500' : 'flex-1 py-1 rounded text-sm text-gray-400'}>
+                      Всі
+                  </button>
+                  <button onClick={() => setFilter('active')} className={filter === 'active' ? 'flex-1 py-1 rounded text-sm text-white bg-green-500' : 'flex-1 py-1 rounded text-sm text-gray-400'}>
+                      Активні
+                  </button>
+                  <button
+                      onClick={() => setFilter('completed')}
+                      className={filter === 'completed' ? 'flex-1 py-1 rounded text-sm text-white bg-yellow-500' : 'flex-1 py-1 rounded text-sm text-gray-400'}>
+                      Виконані
+                  </button>
+              </div>
+              <TodoList todos={filteredTodos} onToggle={handleToggle} onDelete={handleDelete} />
+              <TodoCounter todos={todos} />
+          </div>
+      </main>
   )
 }
