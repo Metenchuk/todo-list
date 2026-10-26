@@ -14,7 +14,7 @@ export default function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
       </p>
       <button
         onClick={() => onDelete(todo.id)}
-        className="text-red-400 hover:text-red-600 text-lg"
+        className="p-1 rounded hover:bg-red-100 transition-colors cursor-pointer"
       >
         ❌
       </button>
